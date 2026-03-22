@@ -1,0 +1,68 @@
+<section style="padding:50px; background:#f4f6f9;">
+    <h2 style="text-align:center; color:#0a3d62;">Send Us a Message</h2>
+
+    <div style="max-width:500px; margin:auto; background:white; padding:20px; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1);">
+
+        <input type="text" id="name" placeholder="Your Name" style="width:100%; padding:10px; margin:10px 0;">
+        
+        <input type="email" id="email" placeholder="Your Email" style="width:100%; padding:10px; margin:10px 0;">
+        
+        <textarea id="message" placeholder="Your Message" style="width:100%; padding:10px; margin:10px 0;"></textarea>
+
+        <button onclick="sendEmail()" style="width:100%; padding:12px; background:#0a3d62; color:white; border:none; border-radius:6px;">
+            Send Message
+        </button>
+
+    </div>
+</section>
+<!-- EMAILJS SCRIPT -->
+<script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+
+<script>
+(function(){
+    emailjs.init("template_o0j08yq");
+})();
+
+function sendEmail() {
+    let name = document.getElementById("name").value;
+    let email = document.getElementById("email").value;
+    let message = document.getElementById("message").value;
+
+    if(name === "" || email === "" || message === "") {
+        alert("Please fill all fields!");
+        return;
+    }
+
+    // 1. SAVE MESSAGE TO LOCAL STORAGE
+    let messages = JSON.parse(localStorage.getItem("messages")) || [];
+
+    messages.push({
+        name: name,
+        email: email,
+        message: message,
+        date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem("messages", JSON.stringify(messages));
+
+    // 2. SEND EMAIL (EMAILJS)
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        name: name,
+        email: email,
+        message: message
+    });
+
+    alert("Message sent successfully!");
+
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("message").value = "";
+}
+    emailjs.send("bkF0j-yozdKOE_j88", "bkF0j-yozdKOE_j88", params)
+    .then(function(response) {
+        alert("Message sent successfully!");
+    }, function(error) {
+        alert("Failed to send message. Try again.");
+    });
+}
+</script>

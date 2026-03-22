@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Admin Dashboard</title>
+
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+/* HEADER */
+header {
+    background: #0a3d62;
+    color: white;
+    padding: 15px;
+    text-align: center;
+}
+
+/* CONTAINER */
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+/* CARD */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* INPUTS */
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+/* BUTTON */
+button {
+    margin-top: 10px;
+    padding: 12px;
+    background: #0a3d62;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #1e90ff;
+}
+
+/* POST */
+.post {
+    background: #fff;
+    padding: 15px;
+    margin-top: 10px;
+    border-left: 5px solid orange;
+    border-radius: 6px;
+}
+
+.post h3 {
+    margin: 0;
+}
+
+.delete-btn {
+    background: red;
+    margin-top: 10px;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+    <h2>Saved By Grace Admin Dashboard</h2>
+</header>
+
+<div class="container">
+
+    <div class="card">
+    <h3>Create Blog Post</h3>
+
+    <input type="text" id="title" placeholder="Post Title">
+
+    <textarea id="content" placeholder="Post Content"></textarea>
+
+    <!-- NEW: IMAGE INPUT -->
+    <input type="text" id="image" placeholder="Image URL (paste image link)">
+
+    <button onclick="addPost()">Publish Post</button>
+</div>
+<div class="card">
+    <h3>📩 Contact Messages</h3>
+    <div id="messages"></div>
+</div>
+    <!-- POSTS -->
+    <div class="card">
+        <h3>Published Posts</h3>
+        <div id="posts"></div>
+    </div>
+
+</div>
+
+<script>
+    function loadMessages() {
+    let messages = JSON.parse(localStorage.getItem("messages")) || [];
+    let container = document.getElementById("messages");
+
+    container.innerHTML = "";
+
+    if(messages.length === 0){
+        container.innerHTML = "<p>No messages yet</p>";
+        return;
+    }
+
+    messages.forEach((msg, index) => {
+        container.innerHTML += `
+            <div style="
+                background:#fff;
+                padding:15px;
+                margin:10px 0;
+                border-radius:10px;
+                box-shadow:0 5px 10px rgba(0,0,0,0.1);
+            ">
+                <h4>${msg.name}</h4>
+                <p><b>Email:</b> ${msg.email}</p>
+                <p>${msg.message}</p>
+                <small>${msg.date}</small>
+                <br>
+                <button onclick="deleteMessage(${index})" style="background:red;color:white;padding:5px;border:none;border-radius:5px;">
+                    Delete
+                </button>
+            </div>
+        `;
+    });
+}
+
+function deleteMessage(index) {
+    let messages = JSON.parse(localStorage.getItem("messages")) || [];
+    messages.splice(index, 1);
+    localStorage.setItem("messages", JSON.stringify(messages));
+    loadMessages();
+}
+
+loadMessages();
+// LOAD POSTS
+function loadPosts() {
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+    let container = document.getElementById("posts");
+
+    container.innerHTML = "";
+
+    posts.forEach((post, index) => {
+        container.innerHTML += `
+            <div class="post">
+                <h3>${post.title}</h3>
+                <p>${post.content}</p>
+                <button class="delete-btn" onclick="deletePost(${index})">Delete</button>
+            </div>
+        `;
+    });
+}
+
+<script>
+function loadPosts() {
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+    let container = document.getElementById("posts");
+
+    container.innerHTML = "";
+
+    posts.forEach((post, index) => {
+        container.innerHTML += `
+            <div class="post">
+                <h3>${post.title}</h3>
+                <img src="${post.image}" style="width:100%; border-radius:8px; margin:10px 0;">
+                <p>${post.content}</p>
+                <button class="delete-btn" onclick="deletePost(${index})">Delete</button>
+            </div>
+        `;
+    });
+}
+
+// ADD POST WITH IMAGE
+function addPost() {
+    let title = document.getElementById("title").value;
+    let content = document.getElementById("content").value;
+    let image = document.getElementById("image").value;
+
+    if(title === "" || content === "") {
+        alert("Please fill title and content!");
+        return;
+    }
+
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+    posts.push({
+        title,
+        content,
+        image: image || "https://via.placeholder.com/400"
+    });
+
+    localStorage.setItem("posts", JSON.stringify(posts));
+
+    document.getElementById("title").value = "";
+    document.getElementById("content").value = "";
+    document.getElementById("image").value = "";
+
+    loadPosts();
+}
+
+// DELETE POST
+function deletePost(index) {
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+    posts.splice(index, 1);
+
+    localStorage.setItem("posts", JSON.stringify(posts));
+
+    loadPosts();
+}
+
+loadPosts();
+</script>
+
+// DELETE POST
+function deletePost(index) {
+    let posts = JSON.parse(localStorage.getItem("posts")) || [];
+
+    posts.splice(index, 1);
+
+    localStorage.setItem("posts", JSON.stringify(posts));
+
+    loadPosts();
+}
+
+// INIT
+loadPosts();
+</script>
+
+</body>
+</html>
